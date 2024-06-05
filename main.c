@@ -2,7 +2,8 @@
 
 #include <stdio.h>
 
-char* MusicName[100];
+unsigned char* MusicName[100];
+unsigned char name[1000];
 
 int main(int argc, char** argv)
 {	
@@ -16,9 +17,6 @@ int main(int argc, char** argv)
         printf("[Error] No such file: %s\n", argv[1]);
         return -1;
     }    
-
-    unsigned char name[1000];
-    memset(name, 0, sizeof(name));
 
     for (int i = 2; i < argc; i++){
         if (strcmp(argv[i], "-n") == 0 || strcmp(argv[i], "--name") == 0) {

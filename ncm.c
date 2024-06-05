@@ -1,16 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdarg.h>
+
+#include "include/ncm.h"
 
 #include "aes.c"
 #include "cJSON.c"
 #include "base64.c"
-
-#define STRINGLEN 100
-#define MULTILEN 10
-
-#define bool char
+#include "metadata.c"
 
 #ifdef WIN32
 #include "utf8ToGbk.c"
@@ -84,30 +81,6 @@ Example:
 }
 */
 
-struct Metadata{
-    int musicId;
-    unsigned char musicName[STRINGLEN];
-    struct{
-        unsigned char Name[STRINGLEN];
-        int Id;
-    } artist[MULTILEN];
-    int albumId;
-    unsigned char album[STRINGLEN];
-    unsigned char albumPicDocId[STRINGLEN];
-    unsigned char albumPic[STRINGLEN];
-    int bitrate;
-    unsigned char mp3DocId[STRINGLEN];
-    int duration;
-    int mvId;
-    unsigned char alias[MULTILEN][STRINGLEN];
-    unsigned char transNames[MULTILEN][STRINGLEN];
-    unsigned char format[STRINGLEN];
-    int flag;
-};
-
-bool logging = false;
-#define LOG if(logging) printf("[Log] "), 
-
 struct NCM{
     struct Metadata metadata;
     cJSON* meta_json;
@@ -162,66 +135,6 @@ void rc4PRGA(unsigned char * s, unsigned char  * data, int len){
 }
 
 
-struct Metadata GetMetadata(struct cJSON* json){
-    struct Metadata metadata;
-    memset(&metadata, 0, sizeof(metadata));
-
-    metadata.musicId    =           cJSON_GetObjectItem(json, "musicId")        ->valueint;
-    metadata.albumId    =           cJSON_GetObjectItem(json, "albumId")        ->valueint;
-    metadata.bitrate    =           cJSON_GetObjectItem(json, "bitrate")        ->valueint;
-    metadata.duration   =           cJSON_GetObjectItem(json, "duration")       ->valueint;
-    metadata.mvId       =           cJSON_GetObjectItem(json, "mvId")           ->valueint;
-    metadata.flag       =           cJSON_GetObjectItem(json, "flag")           ->valueint;
-
-    strcpy(metadata.musicName,      cJSON_GetObjectItem(json, "musicName")     ->valuestring);
-    strcpy(metadata.album,          cJSON_GetObjectItem(json, "album")         ->valuestring);
-    strcpy(metadata.albumPicDocId,  cJSON_GetObjectItem(json, "albumPicDocId") ->valuestring);
-    strcpy(metadata.albumPic,       cJSON_GetObjectItem(json, "albumPic")      ->valuestring);
-    strcpy(metadata.mp3DocId,       cJSON_GetObjectItem(json, "mp3DocId")      ->valuestring);
-    strcpy(metadata.format,         cJSON_GetObjectItem(json, "format")        ->valuestring);
-
-    struct cJSON* artist, *alias, *transNames;
-
-    artist      = cJSON_GetObjectItem(json, "artist");
-    alias       = cJSON_GetObjectItem(json, "alias");
-    transNames  = cJSON_GetObjectItem(json, "transNames");
-
-    for(int i = 0; i < cJSON_GetArraySize(artist); i++){
-        strcpy(
-        metadata.artist[i].Name, cJSON_GetArrayItem(cJSON_GetArrayItem(artist, i), 0)->valuestring);
-        metadata.artist[i].Id =  cJSON_GetArrayItem(cJSON_GetArrayItem(artist, i), 1)->valueint;
-    }
-    for(int i = 0; i < cJSON_GetArraySize(alias); i++)
-        strcpy(metadata.alias[i],       cJSON_GetArrayItem(alias, i)->valuestring);
-    for(int i = 0; i < cJSON_GetArraySize(transNames); i++)
-        strcpy(metadata.transNames[i],  cJSON_GetArrayItem(transNames, i)->valuestring);
-
-    return metadata;
-}
-
-// Print main infomation for NCM
-void PrintMetadata(struct NCM ncm){
-    struct Metadata dat = ncm.metadata;
-    printf("Name:\n%20s\n", dat.musicName);
-    printf("Author:\n");
-    for(int i = 0; i < MULTILEN; i++)
-        if(dat.artist[i].Id != 0)
-            printf("%20s\t\t%d\n", dat.artist[i].Name, dat.artist[i].Id);
-    printf("\n");
-    printf("Album:\n%30s\n", dat.album);
-    printf("Alias:\n");
-    for(int i = 0; i < MULTILEN; i++)
-        if(dat.alias[i][0] != 0)
-            printf("\t%20s\n", dat.alias[i]);
-    printf("TransNames:\n");
-    for(int i = 0; i < MULTILEN; i++)
-        if(dat.transNames[i][0] != 0)
-            printf("\t%20s\n", dat.transNames[i]);
-    printf("ID:\t\t%d\n", dat.musicId);
-    printf("Album ID:\t%d\n", dat.albumId);
-}    
-
-
 // NCM File Decrypt Main Function
 // @param f NCM File 
 // @return NCM Data
@@ -231,9 +144,6 @@ struct NCM DecryptNcm(FILE* f){
     unsigned char  buf[16];
     int len = 0;
 
-    unsigned char  meta_key[] = { 0x23,0x31,0x34,0x6C,0x6A,0x6B,0x5F,0x21,0x5C,0x5D,0x26,0x30,0x55,0x3C,0x27,0x28 };
-	unsigned char  core_key[] = { 0x68,0x7A,0x48,0x52,0x41,0x6D,0x73,0x6F,0x35,0x6B,0x49,0x6E,0x62,0x61,0x78,0x57 };
-	
     /* RC4 Key */
     LOG printf("RC4 Key: \n");
 
@@ -338,7 +248,7 @@ struct NCM DecryptNcm(FILE* f){
     LOG printf("Decrypted Music Data. \n", len);
 
     printf("[Info] Main Metadata\n");
-    PrintMetadata(ncm);
+    PrintMetadata(ncm.metadata);
 
     free(data);
 	free(meta);

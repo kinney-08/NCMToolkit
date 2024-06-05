@@ -20,6 +20,9 @@
   THE SOFTWARE.
 */
 
+#ifndef __CJSON
+#define __CJSON
+
 /* cJSON */
 /* JSON parser in C. */
 
@@ -3117,3 +3120,5 @@ CJSON_PUBLIC(void) cJSON_free(void *object)
 {
     global_hooks.deallocate(object);
 }
+
+#endif

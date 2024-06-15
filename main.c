@@ -1,9 +1,14 @@
-#include "ncm.c"
-
 #include <stdio.h>
+
+#include "NCMTool.h"
+#include "ncm.h"
+
+#define true 1
 
 unsigned char* MusicName[100];
 unsigned char name[1000];
+
+bool logging;
 
 int main(int argc, char** argv)
 {	

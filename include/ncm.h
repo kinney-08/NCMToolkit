@@ -1,15 +1,29 @@
 #ifndef __NCM_H
 #define __NCM_H
 
-#define STRINGLEN 100
-#define MULTILEN 10
+#include <stdio.h>
 
-#define bool char
+#include "NCMTool.h"
+#include "cJSON.h"
+#include "metadata.h"
 
-bool logging;
-#define LOG if(logging) printf("[Log] "), 
+struct NCM{
+    struct Metadata metadata;
+    cJSON* meta_json;
+    unsigned char * img;
+    unsigned char * music;
+    int len_img;
+    int len_music;
+    int errlevel;
+};
 
-unsigned char  meta_key[] = { 0x23,0x31,0x34,0x6C,0x6A,0x6B,0x5F,0x21,0x5C,0x5D,0x26,0x30,0x55,0x3C,0x27,0x28 };
-unsigned char  core_key[] = { 0x68,0x7A,0x48,0x52,0x41,0x6D,0x73,0x6F,0x35,0x6B,0x49,0x6E,0x62,0x61,0x78,0x57 };
+void Del(struct NCM ncm);
+void swap(unsigned char * a, unsigned char * b);
+void rc4Init(unsigned char * s, const unsigned char * key, int len);
+void rc4PRGA(unsigned char * s, unsigned char  * data, int len);
+struct NCM DecryptNcm(FILE* f);
+void AuthorStr(struct NCM ncm, char* author);
+void FileName(struct NCM ncm, char* filename);
+void WriteMusic(struct NCM ncm, char* filename);
 
 #endif

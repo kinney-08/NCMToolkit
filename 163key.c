@@ -1,14 +1,18 @@
+#include "163key.h"
+
 #include <string.h>
 #include <stdlib.h>
 
-#include "metadata.c"
-#include "base64.c"
-#include "aes.c"
+#include "NCMTool.h"
+#include "metadata.h"
+#include "base64.h"
+#include "aes.h"
 
 #ifdef WIN32
-#include "utf8ToGbk.c"
+#include "utf8ToGbk.h"
 #endif
 
+// Function WIP
 struct Metadata Parse163Key(unsigned char* dat, int len){
     int l;
     char* data = base64_decode(dat, len, &l);

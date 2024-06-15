@@ -1,3 +1,5 @@
+#include "utf8ToGbk.h"
+
 #include<Windows.h>
 
 unsigned char* utf8ToGbk(unsigned char* src, int len)

@@ -1,3 +1,6 @@
+#include "base64.h"
+
+#include "NCMTool.h"
 #include <stdlib.h>
 
 int Base64Table[] = { 

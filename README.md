@@ -5,14 +5,16 @@
    Solutions for analysing music acquired from NetEase Cloud Music.
 </p>
 
+
+> [!Tip]
+> NCM stands for NetEase Cloud Music.
+
+
 ## Tools (*Publicly Available*)
 
 - NCM file (*.ncm) decryptor
 - 163 key reader
 - Lyrics downloader
-
-> [!Tip]
-> NCM stands for NetEase Cloud Music.
 
 
 ## I. File Structure

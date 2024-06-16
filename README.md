@@ -1,35 +1,37 @@
-# NCM Toolkit
+<h1 align="center">
+   NCM Toolkit
+</h1>
+<p align="center">
+   Solutions for analysing music acquired from NetEase Cloud Music.
+</p>
 
-Solutions for analysing music acquired from Netease Cloud Music.
+## Tools (*Publicly Available*)
 
-### Tools
+- NCM file (*.ncm) decryptor
+- 163 key reader
+- Lyrics downloader
 
-* NCM file (*.ncm) decryptor
-* 163 key reader
-* Lyrics downloader
+> [!Tip]
+> NCM stands for NetEase Cloud Music.
 
-### About NCM File
 
-NCM is Netease Cloud Music Music File
+## I. File Structure
 
-#### I. File Structure
+| Data Type    | Size        | Description                                        |
+|--------------|-------------|----------------------------------------------------|
+| Magic Header | 10B         | File Header                                        |
+| Key Length   | 4B          | Length of AES128 encrypted RC4 Key (little-endian) |
+| Key Data     | Key Length  | (See Below)                                        |
+| Metadata     | 4B          | Length of Metadata (little-endian)                 |
+| CRC          | 4B          |                                                    |
+| Gap          | 4B          |                                                    |
+| Cover Size   | 4B          | Size of Cover Image                                |
+| Music        | (See Below) |                                                    |
 
-Data Type       Size            Description
 
-Magic Header    10B             File Header
-Key Length      4B              Length of AES128 encrypted RC4 Key (little-endian)
-Key Data        Key Length      (See Below)
-Metadata Length 4B              Length of Metadata  (little-endian)
-Metadata        Metadata Length (See Below)
-CRC             4B              Skip
-Gap             4B              Skip
-Cover Size      4B              Size of Cover Image
-Cover           Cover Size
-Music           -               (See Below)
+## II. Decryption
 
-#### II. Decryption
-
-1. RC4 Key:
+**1. RC4 Key:**
 
    - Decrypt Method:
      - XOR ``0x64`` by byte
@@ -37,8 +39,10 @@ Music           -               (See Below)
      - Remove filling area
      - Remove front 17 bytes:``neteasecloudmusic``
    - AES key: ``0x68,0x7A,0x48,0x52,0x41,0x6D,0x73，0x6F,0x35,0x6B,0x49,0x6E,0x62,0x61,0x78,0x57``
-2. Metadata
 
+
+**2. Metadata:**
+   
    - Data Type: JSON
    - Decrypt Method:
      - XOR 0x63 by byte
@@ -47,12 +51,15 @@ Music           -               (See Below)
      - AES decrypt
      - Remove front 6 bytes
    - AES key: ``0x23,0x31,0x34,0x6C,0x6A,0x6B,0x5F,0x21,0x5C,0x5D,0x26,0x30,0x55,0x3C,0x27,0x28``
-3. Music
+
+
+**3. Music:**
 
    - Generate S-Box by RC4-KSA using RC4 Key
    - Decrypt by S-Box
 
-#### III. Metadata
+
+## III. Metadata
 
 Example:
 ```json

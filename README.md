@@ -45,7 +45,6 @@ Log Start...
 [Log] Successfully Loaded Music Cover.
 [Log] Music:
 [Log] Load block 0
-[Log] Exactly 7933796 Bytes
 [Log] Decrypted Music Data. 
 [Info] Main Metadata
 Name:

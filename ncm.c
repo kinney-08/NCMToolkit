@@ -4,6 +4,7 @@
 
 #include "ncm.h"
 
+#include "NCMTool.h"
 #include "aes.h"
 #include "cJSON.h"
 #include "base64.h"
@@ -162,7 +163,7 @@ struct NCM DecryptNcm(FILE* f){
 	    ncm.music = realloc(ncm.music, reSize);	    // Enlarge
 	}
 
-    LOG printf("Exactly %d Bytes \n", len);
+    LOG printf("Exactly %d Bytes \n", len); // BUG
 
     unsigned char  sBox[256] = {0};
     rc4Init(sBox, rc4Key, strlen(rc4Key)); // Use RC4 to Initialize
@@ -170,7 +171,7 @@ struct NCM DecryptNcm(FILE* f){
 
     ncm.len_music = total;
 
-    LOG printf("Decrypted Music Data. \n", len);
+    LOG printf("Decrypted Music Data. \n");
 
     printf("[Info] Main Metadata\n");
     PrintMetadata(ncm.metadata);

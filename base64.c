@@ -2,6 +2,7 @@
 
 #include "NCMTool.h"
 #include <stdlib.h>
+#include <string.h>
 
 int Base64Table[] = { 
     0,0,0,0,0,0,0,0,0,0,0,0,

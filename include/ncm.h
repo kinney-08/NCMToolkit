@@ -25,5 +25,6 @@ struct NCM DecryptNcm(FILE* f);
 void AuthorStr(struct NCM ncm, char* author);
 void FileName(struct NCM ncm, char* filename);
 void WriteMusic(struct NCM ncm, char* filename);
+void WriteCover(struct NCM ncm, char* filename);
 
 #endif

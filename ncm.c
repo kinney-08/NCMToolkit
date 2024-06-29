@@ -163,7 +163,7 @@ struct NCM DecryptNcm(FILE* f){
 	    ncm.music = realloc(ncm.music, reSize);	    // Enlarge
 	}
 
-    LOG printf("Exactly %d Bytes \n", len); // BUG
+    // LOG printf("Exactly %d Bytes \n", len); // BUG
 
     unsigned char  sBox[256] = {0};
     rc4Init(sBox, rc4Key, strlen(rc4Key)); // Use RC4 to Initialize

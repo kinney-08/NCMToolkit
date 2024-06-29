@@ -1,3 +1,3 @@
-[submodule "id3v2lib"]
-	path = id3v2lib
-	url = https://github.com/larsbs/id3v2lib.git
+[submodule "taglib"]
+	path = taglib
+	url = https://github.com/taglib/taglib.git

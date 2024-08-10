@@ -42,6 +42,7 @@ int main(int argc, char** argv)
         FileName(music, name);
     WriteMusic(music, name);
     WriteCover(music, name);
+    WriteMetadata(music, name);
     fclose(f);
     Del(music);
     return 0;

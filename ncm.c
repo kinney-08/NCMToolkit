@@ -127,7 +127,8 @@ struct NCM DecryptNcm(FILE* f){
     free(data_);
     LOG printf("Turned into GBK\n");
 #endif
-    ncm.metadata = GetMetadata(cJSON_Parse(data + 6));
+    ncm.meta_json = cJSON_Parse(data + 6);
+    ncm.metadata = GetMetadata(ncm.meta_json);
     LOG printf("Successfully Parsed into Metadata \n");
 
     /* Album Cover */
@@ -217,5 +218,15 @@ void WriteCover(struct NCM ncm, char* filename){
     fwrite(ncm.img, 1, ncm.len_img, of);
     fclose(of);
     LOG printf("Wrote Cover to %s\n", saveFileName);
+}
+
+void WriteMetadata(struct NCM ncm, char* filename){
+    unsigned char saveFileName[STRINGLEN * 4]; 
+    sprintf(saveFileName, "%s.json", filename);
+    FILE* of = fopen(saveFileName, "wb");
+    char* data = cJSON_Print(ncm.meta_json);
+    fwrite(data, 1, strlen(data), of);
+    fclose(of);
+    LOG printf("Wrote Metadata to %s\n", saveFileName);
 }
 
